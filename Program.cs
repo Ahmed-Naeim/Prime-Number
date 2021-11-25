@@ -1,105 +1,126 @@
 ﻿using System;
 
-public class LinkedList
+// Class for Doubly Linked List
+public class DLL
 {
+    Node head; // head of list
 
-    static Node head;
-
-    class Node
+    /* Doubly Linked list Node*/
+    public class Node
     {
-
         public int data;
-        public Node next, prev;
+        public Node prev;
+        public Node next;
 
-        public Node(int d)
-        {
-            data = d;
-            next = prev = null;
-        }
+        // Constructor to create a new node
+        // next and prev is by default
+        // initialized as null
+        public Node(int d) { data = d; }
     }
 
-    /* Function to reverse a Doubly Linked List */
-    void reverse()
+    // Adding a node at the front of the list
+    public void push(int new_data)
     {
-        Node temp = null;
-        Node current = head;
+        // 1. allocate node
+        // 2. put in the data
+        Node new_Node = new Node(new_data);
 
-        /* swap next and prev for all nodes of
-        doubly linked list */
-        while (current != null)
-        {
-            temp = current.prev;
-            current.prev = current.next;
-            current.next = temp;
-            current = current.prev;
-        }
+        // 3. Make next of new node as head
+        // and previous as NULL
+        new_Node.next = head;
+        new_Node.prev = null;
 
-        /* Before changing head, check for
-          the cases like empty list and
-         list with only one node */
-        if (temp != null)
-        {
-            head = temp.prev;
-        }
-    }
-
-    /* UTILITY FUNCTIONS */
-    /* Function to insert a node at the
-    beginning of the Doubly Linked List */
-    void push(int new_data)
-    {
-
-        /* allocate node */
-        Node new_node = new Node(new_data);
-
-        /* since we are adding at the beginning,
-        prev is always NULL */
-        new_node.prev = null;
-
-        /* link the old list off the new node */
-        new_node.next = head;
-
-        /* change prev of head node to new node */
+        // 4. change prev of head node to new node
         if (head != null)
-        {
-            head.prev = new_node;
-        }
+            head.prev = new_Node;
 
-        /* move the head to point to the new node */
-        head = new_node;
+        // 5. move the head to point to the new node
+        head = new_Node;
     }
 
-    /* Function to print nodes in a given
-    doubly linked list This function is
-    same as printList() of singly linked list */
-    void printList(Node node)
+    // This function prints contents of linked list
+    // starting from the given node
+    public void printlist(Node node)
     {
+
         while (node != null)
         {
             Console.Write(node.data + " ");
             node = node.next;
         }
+
+        Console.WriteLine();
     }
 
-    // Driver code
-    public static void Main(String[] args)
+    // Function to delete a node in a Doubly Linked List.
+    // head_ref --> pointer to head node pointer.
+    // del --> data of node to be deleted.
+    void deleteNode(Node del)
     {
-        LinkedList list = new LinkedList();
 
-        /* Let us create a sorted linked list
-        to test the functions Created linked
-        list will be 10->8->4->2 */
-        list.push(2);
-        list.push(4);
-        list.push(8);
-        list.push(10);
+        // Base case
+        if (head == null || del == null)
+        {
+            return;
+        }
 
-        Console.WriteLine("Original linked list ");
-        list.printList(head);
+        // If node to be deleted is head node
+        if (head == del)
+        {
+            head = del.next;
+        }
 
-        list.reverse();
-        Console.WriteLine("");
-        Console.WriteLine("The reversed Linked List is ");
-        list.printList(head);
+        // Change next only if node to be deleted
+        // is NOT the last node
+        if (del.next != null)
+        {
+            del.next.prev = del.prev;
+        }
+
+        // Change prev only if node to be deleted
+        // is NOT the first node
+        if (del.prev != null)
+        {
+            del.prev.next = del.next;
+        }
+
+        // Finally, free the memory occupied by del
+        return;
+    }
+
+    // Driver Code
+    public static void Main()
+    {
+        // Start with the empty list
+        DLL dll = new DLL();
+
+        // Insert 2. So linked list becomes 2->NULL
+        dll.push(2);
+
+        // Insert 4. So linked list becomes 4->2->NULL
+        dll.push(4);
+
+        // Insert 8. So linked list becomes 8->4->2->NULL
+        dll.push(8);
+
+        // Insert 10. So linked list becomes 10->8->4->2->NULL
+        dll.push(10);
+
+        Console.Write("Created DLL is: ");
+        dll.printlist(dll.head);
+
+        // Deleting first node
+        dll.deleteNode(dll.head);
+
+        // List after deleting first node
+        // 8->4->2
+        Console.Write("\nList after deleting first node: ");
+        dll.printlist(dll.head);
+
+        // Deleting middle node from 8->4->2
+        dll.deleteNode(dll.head.next);
+
+        Console.Write("\nList after Deleting middle node: ");
+        dll.printlist(dll.head);
     }
 }
